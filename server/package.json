@@ -1,0 +1,34 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "generate": "npx prisma generate",
+    "migrate": "npx prisma migrate dev",
+    "studio": "npx prisma studio"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "apollo-server-express": "^3.13.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "graphql": "^16.10.0",
+    "type-graphql": "^2.0.0-beta.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
+}

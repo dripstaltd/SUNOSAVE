@@ -1,0 +1,12 @@
+node_modules
+.env
+
+# Prisma
+.prisma
+
+# Docker
+docker-compose.yml
+
+# Server
+
+# Client
