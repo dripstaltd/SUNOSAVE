@@ -30,6 +30,15 @@ async function main() {
       }
     ]
   });
+
+  // Add some mock lyrics
+  await prisma.lyrics.create({
+    data: {
+      userId: user.id,
+      lyrics:
+        'Sample lyrics for a metal song...\nSecond line of lyrics\nThird line of lyrics'
+    }
+  });
 }
 
 main()

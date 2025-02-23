@@ -13,4 +13,5 @@ interface ImportMetaEnv {
   VITE_FIREBASE_MEASUREMENTID: string;
   VITE_USE_FIREBASE_EMULATOR: string;
   VITE_API_ORIGIN: string;
+  VITE_GRAPHQL_URL: string;
 }
