@@ -7,12 +7,18 @@ import { resolvers } from './resolvers';
 
 type ApolloContext = {
   req: express.Request;
+  userId?: string;
 };
 
 async function startServer() {
   const app = express();
 
-  app.use(cors());
+  app.use(
+    cors({
+      origin: 'http://localhost:5173', // Your client URL
+      credentials: true
+    })
+  );
   app.use(express.json());
 
   const server = new ApolloServer<ApolloContext>({
@@ -26,7 +32,9 @@ async function startServer() {
     '/graphql',
     expressMiddleware(server, {
       context: async ({ req }) => {
-        return { req };
+        const token = req.headers.authorization?.split('Bearer ')[1];
+        // If token exists, use it as userId
+        return { req, userId: token };
       }
     })
   );

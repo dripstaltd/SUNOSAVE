@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 type ResolverContext = {
   req: express.Request;
+  userId?: string;
 };
 
 export const resolvers = {
@@ -21,12 +22,16 @@ export const resolvers = {
     getPromptsByUser: (
       _: unknown,
       { userId }: { userId: string },
-      __: ResolverContext
-    ) =>
-      prisma.prompt.findMany({
+      context: ResolverContext
+    ) => {
+      if (!context.userId) throw new Error('Not authenticated');
+      if (context.userId !== userId) throw new Error('Not authorized');
+
+      return prisma.prompt.findMany({
         where: { userId },
         include: { user: true }
-      }),
+      });
+    },
     getLyrics: (_: unknown, __: unknown, ___: ResolverContext) =>
       prisma.lyrics.findMany({
         include: { user: true, prompts: true }
@@ -39,12 +44,16 @@ export const resolvers = {
     getLyricsByUser: (
       _: unknown,
       { userId }: { userId: string },
-      __: ResolverContext
-    ) =>
-      prisma.lyrics.findMany({
+      context: ResolverContext
+    ) => {
+      if (!context.userId) throw new Error('Not authenticated');
+      if (context.userId !== userId) throw new Error('Not authorized');
+
+      return prisma.lyrics.findMany({
         where: { userId },
         include: { user: true, prompts: true }
-      })
+      });
+    }
   },
   Mutation: {
     createPrompt: (
@@ -54,14 +63,13 @@ export const resolvers = {
         prompt,
         userId
       }: { genre: string; prompt: string; userId: string },
-      __: ResolverContext
+      context: ResolverContext
     ) => {
+      if (!context.userId) throw new Error('Not authenticated');
+      if (context.userId !== userId) throw new Error('Not authorized');
+
       return prisma.prompt.create({
-        data: {
-          genre,
-          prompt,
-          userId
-        },
+        data: { genre, prompt, userId },
         include: { user: true }
       });
     },
@@ -85,34 +93,85 @@ export const resolvers = {
         include: { user: true }
       });
     },
-    createLyrics: (
+    createLyrics: async (
       _: unknown,
       { userId, lyrics }: { userId: string; lyrics: string },
-      __: ResolverContext
+      context: ResolverContext
     ) => {
+      if (!context.userId) throw new Error('Not authenticated');
+      if (context.userId !== userId) throw new Error('Not authorized');
+
+      // First, find or create user
+      const user = await prisma.user.upsert({
+        where: { id: userId },
+        update: {},
+        create: {
+          id: userId,
+          email: 'placeholder@email.com', // You might want to get this from Firebase auth
+          name: 'New User'
+        }
+      });
+
       return prisma.lyrics.create({
         data: {
-          userId,
+          userId: user.id,
           lyrics
         },
         include: { user: true, prompts: true }
       });
     },
-    updateLyrics: (
+    updateLyrics: async (
       _: unknown,
       { id, lyrics }: { id: string; lyrics: string },
-      __: ResolverContext
+      context: ResolverContext
     ) => {
+      if (!context.userId) throw new Error('Not authenticated');
+
+      // Check if lyrics belongs to user
+      const existing = await prisma.lyrics.findUnique({ where: { id } });
+      if (!existing || existing.userId !== context.userId) {
+        throw new Error('Not authorized');
+      }
+
       return prisma.lyrics.update({
         where: { id },
         data: { lyrics },
         include: { user: true, prompts: true }
       });
     },
-    deleteLyrics: (_: unknown, { id }: { id: string }, __: ResolverContext) => {
+    deleteLyrics: async (
+      _: unknown,
+      { id }: { id: string },
+      context: ResolverContext
+    ) => {
+      if (!context.userId) throw new Error('Not authenticated');
+
+      // Check if lyrics belongs to user
+      const existing = await prisma.lyrics.findUnique({ where: { id } });
+      if (!existing || existing.userId !== context.userId) {
+        throw new Error('Not authorized');
+      }
+
       return prisma.lyrics.delete({
         where: { id },
         include: { user: true, prompts: true }
+      });
+    },
+    upsertUser: async (
+      _: unknown,
+      { id, email, name }: { id: string; email: string; name?: string }
+    ) => {
+      return prisma.user.upsert({
+        where: { id },
+        update: {
+          email,
+          name
+        },
+        create: {
+          id,
+          email,
+          name
+        }
       });
     }
   }

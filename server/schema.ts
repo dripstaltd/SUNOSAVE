@@ -45,5 +45,6 @@ export const typeDefs = gql`
     createLyrics(userId: String!, lyrics: String!): Lyrics!
     updateLyrics(id: ID!, lyrics: String!): Lyrics!
     deleteLyrics(id: ID!): Lyrics!
+    upsertUser(id: String!, email: String!, name: String): User!
   }
 `;

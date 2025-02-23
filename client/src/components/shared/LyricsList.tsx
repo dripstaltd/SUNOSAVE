@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { GET_LYRICS } from '../../graphql/queries';
+import { GET_LYRICS_BY_USER } from '../../graphql/queries';
+import { useAuthState } from '../../hooks/auth';
 
 interface Prompt {
   id: string;
@@ -17,18 +18,23 @@ interface Lyrics {
 }
 
 interface LyricsData {
-  getLyrics: Lyrics[];
+  getLyricsByUser: Lyrics[];
 }
 
 function LyricsList() {
-  const { loading, error, data } = useQuery<LyricsData>(GET_LYRICS);
+  const authState = useAuthState();
+  const { loading, error, data } = useQuery<LyricsData>(GET_LYRICS_BY_USER, {
+    variables: { userId: authState.currentUser?.uid },
+    skip: !authState.currentUser?.uid,
+  });
 
+  if (!authState.currentUser) return <p>Please sign in to view your lyrics</p>;
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
     <div>
-      {data?.getLyrics.map((lyric) => (
+      {data?.getLyricsByUser.map((lyric) => (
         <div key={lyric.id}>
           <p>{lyric.lyrics}</p>
         </div>
