@@ -8,7 +8,7 @@ export const SignInButton = () => {
     <button
       onClick={signIn}
       type="button"
-      className="btn btn-primary normal-case min-w-60"
+      className="btn btn-primary w-full"
     >
       Sign In With Google
     </button>

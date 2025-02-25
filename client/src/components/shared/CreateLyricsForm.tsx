@@ -41,13 +41,13 @@ function CreateLyricsForm() {
         value={lyrics}
         onChange={(e) => setLyrics(e.target.value)}
         placeholder="Enter your lyrics..."
-        className="w-full p-2 border rounded"
+        className="w-full p-2 border rounded input input-bordered input-primary"
         rows={4}
       />
       <button
         type="submit"
         disabled={loading || !lyrics.trim()}
-        className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+        className="btn btn-outline btn-primary"
       >
         {loading ? 'Saving...' : 'Save Lyrics'}
       </button>
