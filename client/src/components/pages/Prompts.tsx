@@ -1,5 +1,5 @@
 import { Head } from "../shared/Head";
-import CreateLyricsForm from "../shared/CreateLyricsForm";
+import CreatePromptForm from "../shared/CreatePromptForm";
 import PromptsList from "../shared/PromptsList";
 
 function Prompts() {
@@ -10,7 +10,7 @@ function Prompts() {
         <div className="card bg-base-200 shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-primary">Create New Prompt</h2>
-            <CreateLyricsForm />
+            <CreatePromptForm />
           </div>
         </div>
 

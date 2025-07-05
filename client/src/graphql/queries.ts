@@ -52,6 +52,16 @@ export const GET_PROMPT_BY_ID = gql`
   }
 `;
 
+export const GET_PROMPTS_BY_USER = gql`
+  query GetPromptsByUser($userId: ID!) {
+    getPromptsByUser(userId: $userId) {
+      id
+      genre
+      prompt
+    }
+  }
+`;
+
 
 
 

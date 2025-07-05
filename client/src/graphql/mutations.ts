@@ -14,3 +14,14 @@ export const CREATE_LYRICS = gql`
     }
   }
 `;
+
+export const CREATE_PROMPT = gql`
+  mutation CreatePrompt($userId: String!, $genre: String!, $prompt: String!) {
+    createPrompt(userId: $userId, genre: $genre, prompt: $prompt) {
+      id
+      genre
+      prompt
+      userId
+    }
+  }
+`;
