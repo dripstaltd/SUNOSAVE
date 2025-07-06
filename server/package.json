@@ -8,7 +8,12 @@
     "generate": "npx prisma generate",
     "migrate": "npx prisma migrate dev",
     "studio": "npx prisma studio",
-    "stop": "docker-compose down"
+    "stop": "docker-compose down",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "format": "prettier --write .",
+    "test": "jest",
+    "tdd": "jest --watch"
   },
   "keywords": [],
   "author": "",

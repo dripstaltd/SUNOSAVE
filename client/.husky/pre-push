@@ -1,0 +1,8 @@
+cat > .husky/pre-push <<'EOF'
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npm test
+EOF
+
+chmod +x .husky/pre-push

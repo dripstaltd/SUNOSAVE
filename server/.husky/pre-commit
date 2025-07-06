@@ -1,0 +1,10 @@
+cat > .husky/pre-commit <<'EOF'
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npm run lint:fix
+npm run format
+npm test
+EOF
+
+chmod +x .husky/pre-commit
