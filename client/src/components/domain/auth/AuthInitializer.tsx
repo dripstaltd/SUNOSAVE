@@ -1,6 +1,6 @@
-import { useEffect, ReactNode } from "react";
-import { auth } from "../../../lib/firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, ReactNode } from 'react';
+import { auth } from '../../../lib/firebase';
+import { onAuthStateChanged, type User } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { signIn, signOut } from '../../../store/slices/authSlice';
 import { serializeUser } from '../../../store/slices/authSlice';
@@ -21,19 +21,19 @@ export const AuthInitializer = ({ children }: { children: ReactNode }) => {
   const [upsertUser] = useMutation(UPSERT_USER);
 
   useEffect(() => {
-    const syncUser = async (user: any) => {
+    const syncUser = async (user: User | null) => {
       if (user) {
         try {
           await upsertUser({
             variables: {
               id: user.uid,
               email: user.email,
-              name: user.displayName
-            }
+              name: user.displayName,
+            },
           });
           dispatch(signIn({ user: serializeUser(user) }));
         } catch (error) {
-          console.error("Error syncing user:", error);
+          console.error('Error syncing user:', error);
         }
       } else {
         dispatch(signOut());
