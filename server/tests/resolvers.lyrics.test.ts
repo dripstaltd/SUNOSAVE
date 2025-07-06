@@ -16,8 +16,7 @@ jest.mock("@prisma/client", () => {
   return { PrismaClient: jest.fn(() => mPrisma) };
 });
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { resolvers } = require("../resolvers");
+import { resolvers } from "../resolvers";
 const prisma = new PrismaClient() as any;
 const mockContext = (userId?: string) => ({ req: {} as any, userId });
 
